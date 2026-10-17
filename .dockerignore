@@ -1,0 +1,7 @@
+.git
+.vercel
+.railway
+.env*
+node_modules
+dist
+tests

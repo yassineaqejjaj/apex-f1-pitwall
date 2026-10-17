@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import '../public/strategy-model.js';const simulate=globalThis.PitwallStrategy.simulateStrategy;
+test('pit loss and warmup charged once, fresh tyre advantage charged per lap',()=>{const r=simulate({remaining:3,base:100,loss:2,oldDeg:0,newDeg:0,advantage:2,warmup:1,gap:.5});assert.equal(r.stayTotal,300);assert.equal(r.best.total,297);assert.equal(r.best.stop,0);assert.equal(r.best.gain,3);assert.equal(r.undercutMargin,.5)});
+test('a late costly stop loses to staying out',()=>{const r=simulate({remaining:2,loss:25,advantage:1,oldDeg:0,newDeg:0,warmup:0});assert.ok(r.scenarios.every(s=>s.gain<0));assert.equal(r.best.gain,-23)});
+test('age is context and is not double-counted in measured current pace',()=>{const a=simulate({age:0}),b=simulate({age:50});assert.equal(a.stayTotal,b.stayTotal);assert.equal(a.best.total,b.best.total)});
+test('large fresh-tyre degradation can favour a later stop',()=>{const r=simulate({remaining:6,oldDeg:0,newDeg:10,loss:0,advantage:20,warmup:0});assert.ok(r.best.stop>0);assert.equal(r.best.stop,3)});
+test('invalid or unbounded horizons are rejected',()=>{for(const remaining of [0,-1,101,1.5,NaN])assert.throws(()=>simulate({remaining}));assert.throws(()=>simulate({loss:-1}));assert.throws(()=>simulate({base:0}));});

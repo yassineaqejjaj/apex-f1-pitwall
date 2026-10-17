@@ -1,0 +1,3 @@
+APEX is an independent F1 data dashboard and is not affiliated with Formula 1, FIA or a racing team.
+Historical data: OpenF1 API (https://openf1.org). Radio URLs point directly to the upstream recording host; recordings are not rehosted.
+Strategy scenarios are illustrative estimates based on editable assumptions, not race predictions or professional team models.
