@@ -4,6 +4,7 @@ Independent race engineering dashboard in French, using real [OpenF1](https://op
 
 ## Features
 
+- Isometric GPS driver tracker with synchronized positions, circular speed/throttle/brake instruments and a sample animation cursor.
 - Timing tower, favourite driver saved on the device, up to four-driver comparison.
 - GPS track split into three time-derived sectors, mini-sector codes when available.
 - Car telemetry, relative time cursor, tyre stints, pit stops, pace and position history.
@@ -30,7 +31,7 @@ npm run build
 
 ### Railway
 
-Dockerfile + railway.json deploy a Node server with `/health`, static fallback and `/api/openf1/:endpoint`. Only documented OpenF1 endpoints are allowed. Anonymous data is cached for 15 seconds; authenticated responses never enter shared caches. Bearer tokens are forwarded to api.openf1.org and never stored in files or logs. The proxy applies origin allowlists and per-client rate limits. No server subscription token is exposed.
+server/Dockerfile + railway.json deploy a Node server with `/health`, static fallback and `/api/openf1/:endpoint`. Only documented OpenF1 endpoints are allowed. Anonymous data is cached for 15 seconds; authenticated responses never enter shared caches. Bearer tokens are forwarded to api.openf1.org and never stored in files or logs. The proxy applies origin allowlists and per-client rate limits. No server subscription token is exposed.
 
 Set `ALLOWED_ORIGINS` to exact comma-separated frontend origins, including the production Vercel domain and any allowed previews. `PORT` is supplied by Railway (default 8080 in the container).
 
