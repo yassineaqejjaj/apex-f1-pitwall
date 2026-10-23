@@ -1,5 +1,14 @@
 # APEX F1 Pit Wall
 
+<!-- portfolio-summary:start -->
+
+> **F1 telemetry and strategy dashboard** | **Status:** Beta; simulations are estimates and live data may require access.
+>
+> [Live application](https://apex-f1-pitwall.vercel.app) · [Architecture](README.md#deployment) · [Demo / verification](README.md#features) · [Source code](https://github.com/yassineaqejjaj/apex-f1-pitwall)
+
+<!-- portfolio-summary:end -->
+
+
 Independent race engineering dashboard in French, using real [OpenF1](https://openf1.org/docs/) data. Not affiliated with Formula 1, FIA or a racing team.
 
 ## Features
