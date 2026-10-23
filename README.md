@@ -2,6 +2,8 @@
 
 <!-- portfolio-summary:start -->
 
+![Project overview](docs/assets/github-cover.svg)
+
 > **F1 telemetry and strategy dashboard** | **Status:** Beta; simulations are estimates and live data may require access.
 >
 > [Live application](https://apex-f1-pitwall.vercel.app) · [Architecture](README.md#deployment) · [Demo / verification](README.md#features) · [Source code](https://github.com/yassineaqejjaj/apex-f1-pitwall)
