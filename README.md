@@ -11,9 +11,22 @@
 <!-- portfolio-summary:end -->
 
 
+## Product overview
+
 Independent race engineering dashboard in French, using real [OpenF1](https://openf1.org/docs/) data. Not affiliated with Formula 1, FIA or a racing team.
 
-## Features
+**Status: Prototype / beta.** Strategy output is an estimate, not a prediction.
+
+## The problem
+
+Race data (timing, GPS, tyres, pit stops, radio) is spread across many raw endpoints. Reading it side by side during a race weekend, and reasoning about pit strategy, is hard without a purpose-built view.
+
+## The solution
+
+A single dashboard in French that loads real OpenF1 data and combines a GPS driver tracker, timing and telemetry views, and a simple, editable strategy model. Strategy results are clearly labelled as estimates (see Known limitations).
+
+## Key features
+
 
 - Isometric GPS driver tracker with synchronized positions, circular speed/throttle/brake instruments and a sample animation cursor.
 - Timing tower, favourite driver saved on the device, up to four-driver comparison.
@@ -24,7 +37,38 @@ Independent race engineering dashboard in French, using real [OpenF1](https://op
 - Custom in-app alerts: gaps, tyre age, positions, pit stops, flags and radio. Rules persist in localStorage; event history stays in memory. The tab must remain open and receiving updates. No background monitoring or push notifications.
 - Deterministic strategy simulation: editable pit loss, pace, degradation, fresh-tyre gain, warmup and target gap. Shows stop-window scenarios and one-lap undercut estimates.
 
-## Run locally
+## Architecture
+
+Derived from `server/`, `public/`, `vercel.json` and `railway.json`:
+
+```mermaid
+flowchart LR
+  B["Browser<br/>static frontend in public/"] -->|PUBLIC_API_BASE set| P["Node proxy server/app.mjs<br/>Railway"]
+  B -->|no PUBLIC_API_BASE| O["OpenF1 API"]
+  P --> O
+  B --> D["Bundled snapshot<br/>public/data/silverstone.json"]
+```
+
+The Railway Node server also serves the frontend as a fallback. Strategy maths lives in `public/strategy-model.js`; the GPS tracker in `public/tracker.js`.
+
+## Tech stack
+
+- Plain JavaScript (ES modules), HTML and CSS; no npm dependencies.
+- Node.js server (`server/app.mjs`), Node 22 or newer (`engines`: `>=22 <27`).
+- Data: OpenF1 API, plus a bundled Silverstone snapshot.
+- Deployment: Vercel (static frontend), Railway (Docker, `server/Dockerfile`).
+- Tests: the built-in Node test runner (`node --test`).
+
+## Screenshots / Demo
+
+Live application: https://apex-f1-pitwall.vercel.app (link taken from the summary block above; not verified here). No screenshots are in the repository; only the project cover:
+
+![Project cover](docs/assets/github-cover.svg)
+
+## Getting started
+
+### Run locally
+
 
 Node.js 22 or 24 recommended. No npm dependencies.
 
@@ -38,15 +82,16 @@ npm run build
 
 `public/data/silverstone.json` is a real July 6, 2025 Silverstone race snapshot. Full timing history and lap-40 car/GPS samples for seven drivers are bundled. Other tours, drivers and sessions load on demand from OpenF1. Historical data is free; live access requires an active OpenF1 subscription and a valid Bearer token. The live client refreshes every 20 seconds, not a continuous high-frequency stream.
 
-## Deployment
+### Deployment
 
-### Railway
+
+#### Railway
 
 server/Dockerfile + railway.json deploy a Node server with `/health`, static fallback and `/api/openf1/:endpoint`. Only documented OpenF1 endpoints are allowed. Anonymous data is cached for 15 seconds; authenticated responses never enter shared caches. Bearer tokens are forwarded to api.openf1.org and never stored in files or logs. The proxy applies origin allowlists and per-client rate limits. No server subscription token is exposed.
 
 Set `ALLOWED_ORIGINS` to exact comma-separated frontend origins, including the production Vercel domain and any allowed previews. `PORT` is supplied by Railway (default 8080 in the container).
 
-### Vercel
+#### Vercel
 
 vercel.json builds the static frontend into `dist/`. Set build environment `PUBLIC_API_BASE=https://<railway-domain>/api/openf1`. Runtime configuration contains only this public API URL. Without it, the frontend calls OpenF1 directly.
 
@@ -57,15 +102,33 @@ railway up --service api
 
 The Railway service also serves the complete dashboard at its root as a fallback. Radio audio is played directly from the source host and may be unavailable; recordings are not rehosted.
 
-## Model limits
+### Security and privacy
+
+
+No account credentials or OpenF1 tokens belong in Git. `.env*`, `.vercel`, `.railway`, build output and Sites metadata are ignored. User favourites and alert rules are local to the browser. A connected client token remains only in that tab’s memory. If the Railway proxy is configured, the token transits that service before OpenF1; the connection dialog explains this.
+
+## Testing & quality
+
+CI (`.github/workflows/ci.yml`, Node 22) runs `npm run check` (syntax checks), `npm test` and `npm run build` on pushes to main and on pull requests. Tests live in `tests/strategy.test.mjs` and `tests/server.test.mjs`. Test coverage is Not yet documented. Whether the latest CI run is passing is not stated here; see the Actions tab.
+
+## Current status
+
+Prototype / Beta, as stated in the summary block above. Historical data works without credentials; live access needs an OpenF1 subscription.
+
+## Known limitations
+
 
 Strategy results are estimates, not predictions. Current pace already includes current tyre age; age is contextual. Degradation is linear and user-specified. Warmup and net pit loss are charged once. The one-lap undercut assumes the rival pits one lap later with equal pit losses. Traffic, weather, Safety Car, grip, fuel and mandatory compound rules are not simulated. The known session lap count is used for the initial historical horizon; for a live session set remaining laps yourself.
 
 The championship “after” view contains the provider’s latest/final race state and is intentionally not recalculated at each historical lap. Track sector boundaries and GPS placement are approximate. Missing/stale timing intervals are shown as —. Some radio files and beta championship data may be unavailable.
 
-## Security and privacy
+## Roadmap
 
-No account credentials or OpenF1 tokens belong in Git. `.env*`, `.vercel`, `.railway`, build output and Sites metadata are ignored. User favourites and alert rules are local to the browser. A connected client token remains only in that tab’s memory. If the Railway proxy is configured, the token transits that service before OpenF1; the connection dialog explains this.
+Not yet documented.
+
+## License
+
+No licence file yet.
 
 ---
 
