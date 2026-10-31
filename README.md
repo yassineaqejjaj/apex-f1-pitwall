@@ -66,3 +66,9 @@ The championship “after” view contains the provider’s latest/final race st
 ## Security and privacy
 
 No account credentials or OpenF1 tokens belong in Git. `.env*`, `.vercel`, `.railway`, build output and Sites metadata are ignored. User favourites and alert rules are local to the browser. A connected client token remains only in that tab’s memory. If the Railway proxy is configured, the token transits that service before OpenF1; the connection dialog explains this.
+
+---
+
+## Part of an engineering approach
+
+Built with the [Agentic SDLC framework](https://github.com/yassineaqejjaj/agentic-sdlc) (earned autonomy). Read how this project was built and what its checks caught in the [case study](https://github.com/yassineaqejjaj/agentic-sdlc/blob/main/docs/case-studies/apex-f1-pitwall.md).
